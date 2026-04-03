@@ -98,5 +98,11 @@ class MainWindow(QMainWindow):
         main_layout.addWidget(manual_group)
 
         # ---------- Заглушка ----------
-        info_label = QLabel("J2, J3, сценарии, координаты и журнал.")
+        info_label = QLabel("Позже добавим J2, J3, сценарии, координаты и журнал.")
         main_layout.addWidget(info_label)
+
+        # ---------- Связь сигнала и функции ----------
+        self.j1_slider.valueChanged.connect(self.update_j1_label)
+
+    def update_j1_label(self, value):
+        self.j1_value_label.setText(f"Текущее положение: {value}°")
