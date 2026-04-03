@@ -70,7 +70,7 @@ class MainWindow(QMainWindow):
         manual_group = QGroupBox("Ручное управление")
         manual_layout = QVBoxLayout()
         manual_group.setLayout(manual_layout)
-
+# J1
         j1_group = QGroupBox("Ось J1")
         j1_layout = QVBoxLayout()
         j1_group.setLayout(j1_layout)
@@ -94,6 +94,41 @@ class MainWindow(QMainWindow):
         j1_layout.addLayout(j1_buttons_layout)
 
         manual_layout.addWidget(j1_group)
+# J2 ось
+        j2_group = QGroupBox("Ось J2")
+        j2_layout = QVBoxLayout()
+        j2_group.setLayout(j2_layout)
+
+        self.j2_value_label = QLabel("Текущее положение: 0°")
+
+        self.j2_slider = QSlider(Qt.Horizontal)
+        self.j2_slider.setMinimum(-90)
+        self.j2_slider.setMaximum(90)
+        self.j2_slider.setValue(0)
+
+        j2_buttons_layout = QHBoxLayout()
+        self.j2_minus_button = QPushButton("J2-")
+        self.j2_plus_button = QPushButton("J2+")
+
+        j2_buttons_layout.addWidget(self.j2_minus_button)
+        j2_buttons_layout.addWidget(self.j2_plus_button)
+
+        j2_layout.addWidget(self.j2_value_label)
+        j2_layout.addWidget(self.j2_slider)
+        j2_layout.addLayout(j2_buttons_layout)
+
+        manual_layout.addWidget(j2_group)
+
+
+        # ---------- Поле шага ----------
+        step_layout = QHBoxLayout()
+        step_label = QLabel("Шаг перемещения:")
+        self.step_input = QLineEdit("5")
+
+        step_layout.addWidget(step_label)
+        step_layout.addWidget(self.step_input)
+
+        manual_layout.addLayout(step_layout)
 
         main_layout.addWidget(manual_group)
 
@@ -101,8 +136,47 @@ class MainWindow(QMainWindow):
         info_label = QLabel("Позже добавим J2, J3, сценарии, координаты и журнал.")
         main_layout.addWidget(info_label)
 
-        # ---------- Связь сигнала и функции ----------
+        # ---------- Связи ----------
+        #J1
         self.j1_slider.valueChanged.connect(self.update_j1_label)
+        self.j1_minus_button.clicked.connect(self.decrease_j1)
+        self.j1_plus_button.clicked.connect(self.increase_j1)
+        #J2
+        self.j2_slider.valueChanged.connect(self.update_j2_label)
+        self.j2_minus_button.clicked.connect(self.decrease_j2)
+        self.j2_plus_button.clicked.connect(self.increase_j2)
 
     def update_j1_label(self, value):
         self.j1_value_label.setText(f"Текущее положение: {value}°")
+    def update_j2_label(self, value):
+        self.j2_value_label.setText(f"Текущее положение: {value}°")
+
+    def get_step_value(self):
+        text = self.step_input.text()
+        try:
+            step = int(text)
+            return step
+        except ValueError:
+            return 1
+
+    def decrease_j1(self):
+        current_value = self.j1_slider.value()
+        step = self.get_step_value()
+        new_value = current_value - step
+        self.j1_slider.setValue(new_value)
+    def decrease_j2(self):
+        current_value = self.j2_slider.value()
+        step = self.get_step_value()
+        new_value = current_value - step
+        self.j2_slider.setValue(new_value)
+
+    def increase_j1(self):
+        current_value = self.j1_slider.value()
+        step = self.get_step_value()
+        new_value = current_value + step
+        self.j1_slider.setValue(new_value)
+    def increase_j2(self):
+        current_value = self.j2_slider.value()
+        step = self.get_step_value()
+        new_value = current_value + step
+        self.j2_slider.setValue(new_value)
